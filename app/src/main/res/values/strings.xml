@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">giffun01</string>
+    <string name="transition_logo_splash" translatable="false">transition_logo_splash</string>
 </resources>
