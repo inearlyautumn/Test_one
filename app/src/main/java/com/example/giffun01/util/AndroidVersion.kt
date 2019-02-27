@@ -32,4 +32,10 @@ object AndroidVersion {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
     }
 
+    /**
+     * 判断当前手机系统版本API是否是23以上
+     * */
+    fun hasMarshmallow(): Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+    }
 }

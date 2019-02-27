@@ -4,6 +4,7 @@
           package="com.example.giffun01">
 
     <application
+            android:name=".GifFunApplication"
             android:allowBackup="true"
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
@@ -11,7 +12,19 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".login.OpenSourceLoginActivity">
+
+        <activity android:name=".login.OpenSourceLoginActivity"
+                  android:screenOrientation="portrait"
+                  android:theme="@style/GifFun.LoginActivity"
+                  android:windowSoftInputMode="adjustResize|stateHidden">
+            <intent-filter>
+                <action android:name="com.example.giffun01.ACTION_LOGIN"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.example.giffun01.ACTION_LOGIN_WITH_TRANSITION"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
         <activity
                 android:name=".OpenSourceSplashActivity"

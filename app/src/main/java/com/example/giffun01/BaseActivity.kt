@@ -1,36 +1,23 @@
 package com.example.giffun01
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Context
-import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewStub
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.TextView
-import com.example.giffun01.callback.PermissionListener
 import com.example.giffun01.callback.RquestLifecycle
 import com.example.giffun01.event.ForceToLoginEvent
 import com.example.giffun01.event.MessageEvent
 import com.example.giffun01.login.LoginActivity
 import com.example.giffun01.util.ActivityCollector
-import com.example.giffun01.util.AndroidVersion
 import com.example.giffun01.util.logWarn
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.lang.ref.WeakReference
-import kotlin.math.log
 
 /**
  * 应用程序中所有Activity的基类
@@ -87,12 +74,28 @@ open class BaseActivity : AppCompatActivity(), RquestLifecycle {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            android.R.id.home ->{
+            android.R.id.home -> {
                 finish()
                 return true
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    /**
+     * 隐藏软键盘
+     * */
+    fun hideSoftKeyboard() {
+        val view = currentFocus
+        try {
+            if (view != null) {
+                val binder = view.windowToken
+                val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                manager.hideSoftInputFromWindow(binder, InputMethodManager.HIDE_NOT_ALWAYS)
+            }
+        } catch (e: Exception) {
+            logWarn(TAG, e.message, e)
+        }
     }
 
 

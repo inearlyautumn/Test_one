@@ -33,3 +33,9 @@ fun logDebug(tag: String, msg: String) {
         Log.d(tag, msg.toString())
     }
 }
+
+fun logVerbose(tag: String, msg: String) {
+    if (level <= VERBOSE) {
+        Log.v(tag, msg.toString())
+    }
+}

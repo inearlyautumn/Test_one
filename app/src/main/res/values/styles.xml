@@ -20,4 +20,21 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
     </style>
 
+    <style name="GifFun.RegisterActivity">
+        <item name="colorAccent">@color/white</item>
+        <item name="android:textColor">@color/white_text</item>
+        <item name="android:textColorHint">@color/white_text</item>
+        <item name="colorControlNormal">@color/white_text</item>
+        <item name="colorControlHighlight">@color/white_text</item>
+    </style>
+
+    <style name="GifFun.LoginActivity" parent="GifFun.RegisterActivity">
+    </style>
+
+    <style name="EditTextErrorAppearance" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/white_text</item>
+        <item name="android:textSize">12sp</item>
+
+    </style>
+
 </resources>

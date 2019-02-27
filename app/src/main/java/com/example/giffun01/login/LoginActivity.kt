@@ -54,23 +54,13 @@ abstract class LoginActivity : AuthActivity() {
          * @param logo
          * 要执行transition动画控件
          * */
-        fun actionStartWithTransition(
-            activity: Activity,
-            logo: View,
-            hasNewVersion: Boolean,
-            version: Version?
-        ) {
+        fun actionStartWithTransition(activity: Activity, logo: View, hasNewVersion: Boolean, version: Version?) {
             val intent = Intent(ACTION_LOGIN_WITH_TRANSITION).apply {
-                putExtra(INTENT_HAS_NEW_VERSION, hasNewVersion)
                 putExtra(INTENT_VERSION, version)
             }
             if (AndroidVersion.hasLollipop()) {
                 intent.putExtra(START_WITH_TRANSITION, true)
-                val options = ActivityOptions.makeSceneTransitionAnimation(
-                    activity,
-                    logo,
-                    activity.getString(R.string.transition_logo_splash)
-                )
+                val options = ActivityOptions.makeSceneTransitionAnimation(activity, logo, activity.getString(R.string.transition_logo_splash))
                 activity.startActivity(intent, options.toBundle())
             } else {
                 activity.startActivity(intent)
