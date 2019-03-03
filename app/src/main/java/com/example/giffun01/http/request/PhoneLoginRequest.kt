@@ -1,7 +1,8 @@
-package com.example.giffun01.http
+package com.example.giffun01.http.request
 
 import com.example.giffun01.global.GifFun
-import com.example.giffun01.model.Callback
+import com.example.giffun01.callback.Callback
+import com.example.giffun01.http.response.PhoneLogin
 
 class PhoneLoginRequest : Request() {
     override fun method(): Int {

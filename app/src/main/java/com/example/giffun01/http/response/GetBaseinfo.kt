@@ -1,7 +1,8 @@
-package com.example.giffun01.model
+package com.example.giffun01.http.response
 
-import com.example.giffun01.http.GetBaseinfoRequest
-import com.example.giffun01.http.Response
+import com.example.giffun01.callback.Callback
+import com.example.giffun01.http.request.GetBaseinfoRequest
+import com.example.giffun01.http.response.Response
 import com.google.gson.annotations.SerializedName
 
 /**

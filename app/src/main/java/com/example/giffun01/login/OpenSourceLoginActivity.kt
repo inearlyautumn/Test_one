@@ -9,10 +9,11 @@ import android.view.View
 import com.example.giffun01.R
 import com.example.giffun01.callback.SimpleTransitionListener
 import com.example.giffun01.event.FinishActivityEvent
-import com.example.giffun01.http.PhoneLogin
-import com.example.giffun01.model.Callback
-import com.example.giffun01.model.FetchVCode
-import com.example.giffun01.http.Response
+import com.example.giffun01.http.response.PhoneLogin
+import com.example.giffun01.callback.Callback
+import com.example.giffun01.getResponseClue
+import com.example.giffun01.http.response.FetchVCode
+import com.example.giffun01.http.response.Response
 import com.example.giffun01.util.AndroidVersion
 import com.example.giffun01.util.GlobalUtil
 import com.example.giffun01.util.GlobalUtil.showToast
@@ -128,19 +129,29 @@ class OpenSourceLoginActivity : LoginActivity() {
                         0 -> {
                             hideSoftKeyboard()
                             //处理登录成功时的逻辑，包括数据缓存，界面跳转等
-                            saveAuthData(userId,token,TYPE_PHONE_LOGIN)
+                            saveAuthData(userId, token, TYPE_PHONE_LOGIN)
                             getUserBaseinfo()
                         }
+                        10101 -> {//处理注册的逻辑
+                            hideSoftKeyboard()
+//                            OpenSourceLoginActivity.registerByPhone()
+                        }
                         else -> {
+                            logWarn(TAG, "Login failed. " + GlobalUtil.getResponseClue(status, msg))
+                            showToast(response.msg)
+                            loginInProgress(false)
                         }
                     }
+                } else {
+                    loginInProgress(false)
                 }
             }
 
             override fun onFailure(e: Exception) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                logWarn(TAG, e.message, e)
+                ResponseHandler.handleFailure(e)
+                loginInProgress(false)
             }
-
         })
     }
 

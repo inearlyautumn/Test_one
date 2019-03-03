@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.view.View
+import com.example.giffun01.MainActivity
 import com.example.giffun01.R
 import com.example.giffun01.global.GifFun
 import com.example.giffun01.model.Version
@@ -27,6 +28,12 @@ abstract class LoginActivity : AuthActivity() {
      * */
     fun actionStartWithTransition(activity: Activity, logo: View, hasNewVersion: Boolean, version: Version) {
         Intent()
+    }
+
+    override fun forwardToMainActivity() {
+        //登录成功，跳转到应用主界面
+        MainActivity.actionStart(this)
+        finish()
     }
 
     companion object {

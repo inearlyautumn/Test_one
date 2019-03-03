@@ -1,8 +1,8 @@
-package com.example.giffun01.http
+package com.example.giffun01.http.request
 
 import com.example.giffun01.global.GifFun
-import com.example.giffun01.model.Callback
-import com.example.giffun01.model.GetBaseinfo
+import com.example.giffun01.callback.Callback
+import com.example.giffun01.http.response.GetBaseinfo
 
 /**
  * 获取当前用户的基本信息请求，对应服务器接口：/user/baseinfo

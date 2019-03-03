@@ -1,4 +1,4 @@
-package com.example.giffun01.http
+package com.example.giffun01.http.response
 
 /**
  * 请求响应的基类，这里封装了所有请求都必须会响应的参数，status和msg

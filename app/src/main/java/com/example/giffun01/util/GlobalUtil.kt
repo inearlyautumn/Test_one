@@ -1,5 +1,7 @@
 package com.example.giffun01.util
 
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Looper
 import android.widget.Toast
 import com.example.giffun01.global.GifFun
@@ -9,6 +11,14 @@ import com.example.giffun01.global.GifFun
  * 类当中，从而给全局代码提供方面的操作。
  * */
 object GlobalUtil {
+
+    /**
+     * 获取当前应用程序的包名
+     * */
+    val appPackage: String = "com.quxianggif.opensource"
+//        get() = GifFun.getContext().packageName
+
+    val appVersionCode: Int = 18
 
     /**
      * 将当前线程睡眼指定毫秒数
@@ -56,6 +66,25 @@ object GlobalUtil {
             }
             toast?.show()
         }
+    }
+
+    /**
+     * 获取AndroidManifest.xml文件中，<application>标签下的meta-data值
+     * @param key
+     * <application> 标签下的meta-data健
+     * */
+    fun getApplicationMetaData(key: String): String? {
+        var applicationInfo: ApplicationInfo? = null
+        try {
+            applicationInfo =
+                GifFun.getContext().packageManager.getApplicationInfo(appPackage, PackageManager.GET_META_DATA)
+        } catch (e: PackageManager.NameNotFoundException) {
+            logWarn(TAG, e.message, e)
+        }
+        if (applicationInfo == null) {
+            return ""
+        }
+        return applicationInfo.metaData.getString(key)
     }
 
     private var TAG = "GlobalUtil"

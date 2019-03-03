@@ -1,6 +1,6 @@
-package com.example.giffun01.model
+package com.example.giffun01.callback
 
-import com.example.giffun01.http.Response
+import com.example.giffun01.http.response.Response
 
 /**
  * 网络请求响应的回调接口

@@ -4,7 +4,7 @@ import com.example.giffun01.R
 import com.example.giffun01.event.ForceToLoginEvent
 import com.example.giffun01.exception.ResponseCodeException
 import com.example.giffun01.global.GifFun
-import com.example.giffun01.http.Response
+import com.example.giffun01.http.response.Response
 import com.example.giffun01.util.GlobalUtil.showToastOnUiThread
 import org.greenrobot.eventbus.EventBus
 import java.net.ConnectException

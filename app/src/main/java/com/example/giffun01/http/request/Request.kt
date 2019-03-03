@@ -1,12 +1,24 @@
-package com.example.giffun01.http
+package com.example.giffun01.http.request
 
-import com.example.giffun01.model.Callback
+import com.example.giffun01.callback.OriginThreadCallback
+import com.example.giffun01.exception.ResponseCodeException
+import com.example.giffun01.global.GifFun
+import com.example.giffun01.callback.Callback
+import com.example.giffun01.http.LoggingInterceptor
+import com.example.giffun01.http.response.Response
 import com.example.giffun01.util.AuthUtil
 import com.example.giffun01.util.NetworkConst
 import com.example.giffun01.util.Utility
+import com.example.giffun01.util.logVerbose
+import com.google.gson.GsonBuilder
+import okhttp3.Call
 import okhttp3.FormBody
 import okhttp3.Headers
 import okhttp3.OkHttpClient
+import okhttp3.internal.Util
+import java.io.IOException
+import java.lang.Exception
+import java.util.concurrent.TimeUnit
 
 /**
  * 网络请求模式的基类，所有的请求封装都应该要继承此类，这里会提供网络模块的配置，
@@ -23,7 +35,9 @@ abstract class Request {
 
     private var params: Map<String, String>? = null
 
-    lateinit var deviceSerial: String
+     var deviceSerial = Utility.getDeviceSerial()
+
+    var deviceName: String = Utility.deviceName
 
     abstract fun listen(callback: Callback?)
 
@@ -66,8 +80,74 @@ abstract class Request {
         requestBuilder.headers(headers(Headers.Builder()).build())//---???这个.build()不太懂
         when {
             method() == POST -> requestBuilder.post(formBody())
+            method() == PUT -> requestBuilder.put(formBody())
+            method() == DELETE -> requestBuilder.delete(formBody())
         }
+        okHttpClient.newCall(requestBuilder.build()).enqueue(object : okhttp3.Callback {
+            override fun onResponse(call: Call, response: okhttp3.Response) {
+                try {
+                    if (response.isSuccessful) {
+                        val body = response.body()
+                        val result = if (body != null) {
+                            body.string()
+                        } else {
+                            ""
+                        }
+                        logVerbose(LoggingInterceptor.TAG, result)
+                        val gson = GsonBuilder().disableHtmlEscaping().create()
+                        val responseModel = gson.fromJson(result, requestModel)
+                        response.close()
+                        notifyResponse(responseModel)
+                    } else {
+                        notifyFailure(ResponseCodeException(response.code()))
+                    }
+                } catch (e: Exception) {
+                    notifyFailure(e)
+                }
+            }
 
+            override fun onFailure(call: Call, e: IOException) {
+                notifyFailure(e)
+            }
+
+        })
+
+    }
+
+    /**
+     * 当请求响应失败的时候，将具体的异常进行回调
+     * */
+    private fun notifyFailure(e: Exception) {
+        callback?.let {
+            if (it is OriginThreadCallback) {
+                it.onFailure(e)
+                callback = null
+            } else {
+                GifFun.getHandler().post {
+                    it.onFailure(e)
+                    callback = null
+                }
+            }
+        }
+    }
+
+    /**
+     * 当请求响应成功的时候，将服务器响应转换后的实体类进行回调
+     * @param response
+     * 服务器响应转换后的实体类
+     * */
+    private fun notifyResponse(response: Response) {
+        callback?.let {
+            if (it is OriginThreadCallback) {
+                it.onResponse(response)
+                callback = null
+            } else {
+                GifFun.getHandler().post {
+                    it.onResponse(response)
+                    callback = null
+                }
+            }
+        }
     }
 
     open fun headers(builder: Headers.Builder): Headers.Builder {
@@ -75,6 +155,29 @@ abstract class Request {
         builder.add(NetworkConst.HEADER_APP_VERSION, Utility.appVersion)
         builder.add(NetworkConst.HEADER_APP_SIGN, Utility.appSign)
         return builder
+    }
+
+    /**
+     * 根据传入的keys构建用于进行服务器验证的参数，并添加到请求头当中。
+     * @param builder
+     * 请求头builder
+     * @param keys
+     * 用于进行服务器验证的健
+     * */
+    fun buildAuthHeaders(builder: Headers.Builder?, vararg keys: String) {
+        if (builder != null && keys.isNotEmpty()) {
+            val params = mutableListOf<String>()
+            for (i in keys.indices) {
+                val key = keys[i]
+                getParams()?.let {
+                    val p = it[key]
+                    if (p != null) {
+                        params.add(p)
+                    }
+                }
+            }
+            builder.add(NetworkConst.VERIFY, AuthUtil.getSserverVerifyCode(*params.toTypedArray()))
+        }
     }
 
     /**
@@ -129,7 +232,7 @@ abstract class Request {
      * */
     private fun getParams(): Map<String, String>? {
         if (!getParamsAlready) {
-            params = null
+            params = params()
             getParamsAlready = true
         }
         return params
@@ -141,6 +244,18 @@ abstract class Request {
 
     private fun build() {
         okHttpClient = okHttpBuilder.build()
+    }
+
+    fun connectTimeout(seconds: Int) {
+        okHttpBuilder.connectTimeout(seconds.toLong(), TimeUnit.SECONDS)
+    }
+
+    fun writeTimeout(seconds: Int) {
+        okHttpBuilder.writeTimeout(seconds.toLong(), TimeUnit.SECONDS)
+    }
+
+    fun readTimeout(seconds: Int) {
+        okHttpBuilder.readTimeout(seconds.toLong(), TimeUnit.SECONDS)
     }
 
     abstract fun method(): Int

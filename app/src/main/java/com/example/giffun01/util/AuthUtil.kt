@@ -2,13 +2,14 @@ package com.example.giffun01.util
 
 import android.text.TextUtils
 import com.example.giffun01.global.Const
-
+import java.lang.StringBuilder
 /**
  * 服务器身份验证相关的工具类
  * */
 object AuthUtil {
     /**
      * 判断用户是否已登录
+     * @return 已登录返回true，未登录返回false
      * */
     val isLogin: Boolean
         get() {
@@ -31,4 +32,44 @@ object AuthUtil {
     val token: String
         get() = SharedUtil.read(Const.Auth.TOKEN, "")
 
+    fun getServerVerifyCode(vararg params: String): String {
+        if (params.isNotEmpty()) {
+            val builder = StringBuilder()
+            var needSeparator = false
+            for (param in params) {
+                if (needSeparator) {
+                    builder.append(",")
+                }
+                builder.append(param)
+                needSeparator = true
+            }
+            return MD5.encrypt(builder.toString())
+        }
+        return ""
+    }
+
+    /**
+     * 获取服务器核试验码，使用和服务器端相同的算法生成服务器校验码，对接口的安全性进行保护，
+     * 防止对服务器进行恶意攻击。
+     * @param params 参与生成服务器校验码的参数
+     * @return 服务器校验码。
+     *
+     * */
+    fun getSserverVerifyCode(vararg params: String): String {
+        if (params.isNotEmpty()) {
+            val builder = StringBuilder()
+            var needSeparator = false
+            for (param in params) {
+                if (needSeparator) {
+                    builder.append(",")
+                }
+                builder.append(param)
+                needSeparator = true
+            }
+            return MD5.encrypt(builder.toString())
+        }
+        return ""
+    }
+
 }
+

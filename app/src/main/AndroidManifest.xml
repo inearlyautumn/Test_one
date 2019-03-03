@@ -3,6 +3,9 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.example.giffun01">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+
     <application
             android:name=".GifFunApplication"
             android:allowBackup="true"
@@ -38,6 +41,10 @@
         </activity>
         <activity android:name=".MainActivity">
         </activity>
+
+        <meta-data
+                android:name="APP_CHANNEL"
+                android:value="opensource"/>
     </application>
 
 </manifest>
